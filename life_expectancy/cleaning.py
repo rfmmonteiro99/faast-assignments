@@ -5,18 +5,34 @@ import argparse
 import pandas as pd
 
 
-def clean_data(
-    file_path: str,
-    region: str = 'PT'
-):
+def load_data(
+    file_path: str
+) -> pd.DataFrame:
     """
-    Load file as a pandas DataFrame and clean the data
-    :param file_path: Name of the file to be loaded
-    :param region: Region to select data from
+    Loads file as a pandas DataFrame
+    :param file_name: Name of the file to be loaded
+
+    :return: Pandas DataFrame with the loaded data
     """
     # Load the eu_life_expectancy_raw.tsv data from the data folder
-    eu_life_expectancy = pd.read_csv(file_path, sep='\t')
+    data = pd.read_csv(
+        file_path,
+        sep='\t'
+    )
 
+    return data
+
+def clean_data(
+    eu_life_expectancy: pd.DataFrame,
+    region: str = 'PT'
+) -> pd.DataFrame:
+    """
+    Clean the previously imported DataFrame
+    :param eu_life_expectancy: Pandas DataFrame with life expectancy data
+    :param region: Region to select data from
+
+    :return: Pandas DataFrame after performing the cleaning process
+    """
     # The first column has issues
     bad_columns = eu_life_expectancy.columns[0]
 
@@ -59,17 +75,40 @@ def clean_data(
         eu_life_expectancy_final['region'] == region
     ]
 
+    return eu_life_expectancy_final
+
+def save_data(
+    data_to_save: pd.DataFrame,
+    file_name: str
+):
+    """
+    Save the clean DataFrame to a specified folder
+    :param data_to_save: Pandas DataFrame with the data to be saved
+    :param file_name: Name for the created file
+    """
     # Save the resulting dataframe to the data folder
-    eu_life_expectancy_final.to_csv('life_expectancy/data/pt_life_expectancy.csv', index=False)
+    data_to_save.to_csv(
+        file_name,
+        index=False
+    )
 
 if __name__ == "__main__": # pragma: no cover
 
-    # Parse arguments passed through the CL
+    # Parse arguments passed through the command-line
     parser = argparse.ArgumentParser()
     parser.add_argument('region')
     args = parser.parse_args()
 
-    clean_data(
-        file_path='life_expectancy/data/eu_life_expectancy_raw.tsv',
+    loaded_data = load_data(
+        file_path='life_expectancy/data/eu_life_expectancy_raw.tsv'
+    )
+
+    cleaned_data = clean_data(
+        eu_life_expectancy=loaded_data,
         region=args.region
+    )
+
+    save_data(
+        cleaned_data,
+        'life_expectancy/data/pt_life_expectancy.csv'
     )
