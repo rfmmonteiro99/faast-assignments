@@ -15,6 +15,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e '.[dev]'
       - name: Run tests
-        run: pytest life_expectancy --cov
+        run: pytest --cov-report html --cov=life_expectancy
       - name: Run pylint
         run: pylint life_expectancy.cleaning
