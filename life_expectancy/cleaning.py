@@ -40,9 +40,9 @@ def clean_data(
     updated_columns = bad_columns.split(',')
 
     # Update the dataframe to split the data columns and update the column names
-    eu_life_expectancy[updated_columns] = eu_life_expectancy[bad_columns]\
-        .str\
-        .split(',', expand=True)
+    eu_life_expectancy[updated_columns] = (
+        eu_life_expectancy[bad_columns].str.split(',', expand=True)
+    )
 
     # Drop dirty columns
     eu_life_expectancy.drop(columns=bad_columns, inplace=True)
