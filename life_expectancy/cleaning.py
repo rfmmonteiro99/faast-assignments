@@ -59,7 +59,7 @@ def clean_data(
     # Change year's data type
     eu_life_expectancy_pivot = eu_life_expectancy_pivot.astype({'year': int})
 
-    # Get only the float numbers in the 'value' column and set the correspondent data type
+    # Get only the float numbers in the 'value' column and set the data type
     eu_life_expectancy_pivot['value'] = (
         eu_life_expectancy_pivot['value'].str.extract(r'([0-9]+\.?[0-9])').astype('float')
     )
@@ -95,9 +95,9 @@ def main(
         output_filename: str):
     """
     Steps: Load the data, clean it, and export it
-    :param input_filename: 
-    :param region: 
-    :param output_filename: 
+    :param input_filename: Path to the input data file
+    :param region: Region to select data from
+    :param output_filename: Path to save the ouput data file
     """
     loaded_data = load_data(
         file_path=input_filename
