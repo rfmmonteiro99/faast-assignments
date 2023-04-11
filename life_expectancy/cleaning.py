@@ -1,20 +1,26 @@
 """
 Script that loads a csv file, cleans its data, and saves it 
 """
+import pathlib
 import argparse
 import pandas as pd
 
 
+# Define the path
+full_path: pathlib.Path = pathlib.Path(__file__).parent / 'data'
+
 def load_data(
-        file_path: str) -> pd.DataFrame:
+        file_path: pathlib.Path,
+        file_name: str) -> pd.DataFrame:
     """
     Loads file from its folder as a pandas DataFrame
+    :param file_path: Path to the file
     :param file_name: Name of the file to be loaded
 
     :return: Pandas DataFrame with the loaded data
     """
     data = pd.read_csv(
-        file_path,
+        file_path / file_name,
         sep='\t'
     )
 
@@ -78,38 +84,44 @@ def clean_data(
 
 def save_data(
         data_to_save: pd.DataFrame,
+        file_path: pathlib.Path,
         file_name: str):
     """
     Save the clean DataFrame to a specified folder
     :param data_to_save: Pandas DataFrame with the data to be saved
+    :param file_path: Path to the file
     :param file_name: Name for the created file
     """
     data_to_save.to_csv(
-        file_name,
+        file_path / file_name,
         index=False
     )
 
 def main(
+        file_path: pathlib.Path,
         input_filename: str,
         region: str,
         output_filename: str):
     """
     Steps: Load the data, clean it, and export it
+    :param file_path: Path to the files
     :param input_filename: Path to the input data file
     :param region: Region to select data from
     :param output_filename: Path to save the ouput data file
     """
     loaded_data = load_data(
-        file_path=input_filename
+        file_path,
+        input_filename
     )
 
     cleaned_data = clean_data(
-        eu_life_expectancy=loaded_data,
-        region=region
+        loaded_data,
+        region
     )
 
     save_data(
         cleaned_data,
+        file_path,
         output_filename
     )
 
@@ -121,7 +133,8 @@ if __name__ == "__main__": # pragma: no cover
     args = parser.parse_args()
 
     main(
-        'life_expectancy/data/eu_life_expectancy_raw.tsv',
+        full_path,
+        'eu_life_expectancy_raw.tsv',
         args.region,
-        'life_expectancy/data/pt_life_expectancy.csv'
+        'pt_life_expectancy.csv'
     )
