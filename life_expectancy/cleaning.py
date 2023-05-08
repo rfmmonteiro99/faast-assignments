@@ -1,15 +1,23 @@
 """
 Script that loads a csv file, cleans its data, and saves it 
 """
+import pathlib
 import argparse
 import pandas as pd
 
 
-def load_data(
-        file_path: str) -> pd.DataFrame:
+# Define paths
+PARENT_PATH = pathlib.Path(__file__).parent
+DATA_DIR = PARENT_PATH / 'data'
+INPUT_FILE_NAME = 'eu_life_expectancy_raw.tsv'
+OUTPUT_FILE_NAME = 'pt_life_expectancy.csv'
+INPUT_FILE_PATH = DATA_DIR / INPUT_FILE_NAME
+OUTPUT_FILE_PATH = DATA_DIR / OUTPUT_FILE_NAME
+
+def load_data(file_path: str) -> pd.DataFrame:
     """
     Loads file from its folder as a pandas DataFrame
-    :param file_name: Name of the file to be loaded
+    :param file_path: Path to the file
 
     :return: Pandas DataFrame with the loaded data
     """
@@ -78,40 +86,39 @@ def clean_data(
 
 def save_data(
         data_to_save: pd.DataFrame,
-        file_name: str):
+        file_path: str):
     """
     Save the clean DataFrame to a specified folder
     :param data_to_save: Pandas DataFrame with the data to be saved
-    :param file_name: Name for the created file
+    :param file_path: Path to the file
     """
     data_to_save.to_csv(
-        file_name,
+        file_path,
         index=False
     )
 
-def main(
-        input_filename: str,
-        region: str,
-        output_filename: str):
+def main(region: str) -> pd.DataFrame:
     """
     Steps: Load the data, clean it, and export it
-    :param input_filename: Path to the input data file
     :param region: Region to select data from
-    :param output_filename: Path to save the ouput data file
+
+    :return: Pandas DataFrame after performing the cleaning process
     """
     loaded_data = load_data(
-        file_path=input_filename
+        INPUT_FILE_PATH
     )
 
     cleaned_data = clean_data(
-        eu_life_expectancy=loaded_data,
-        region=region
+        loaded_data,
+        region
     )
 
     save_data(
         cleaned_data,
-        output_filename
+        OUTPUT_FILE_PATH
     )
+
+    return cleaned_data
 
 
 if __name__ == "__main__": # pragma: no cover
@@ -120,8 +127,4 @@ if __name__ == "__main__": # pragma: no cover
     parser.add_argument('region')
     args = parser.parse_args()
 
-    main(
-        'life_expectancy/data/eu_life_expectancy_raw.tsv',
-        args.region,
-        'life_expectancy/data/pt_life_expectancy.csv'
-    )
+    main(args.region)
