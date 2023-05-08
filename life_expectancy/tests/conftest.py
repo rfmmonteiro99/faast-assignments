@@ -2,10 +2,15 @@
 import pandas as pd
 import pytest
 
-from . import FIXTURES_DIR
+from life_expectancy.tests.fixtures.sample_data import raw_data, expected_result
 
 
-@pytest.fixture(scope='session')
-def pt_life_expectancy_expected() -> pd.DataFrame:
-    """Fixture to load the expected output of the cleaning script"""
-    return pd.read_csv(FIXTURES_DIR / "pt_life_expectancy_expected.csv")
+@pytest.fixture
+def fixture_raw_data():
+    """Load raw data"""
+    return pd.DataFrame(raw_data())
+
+@pytest.fixture
+def fixture_expect():
+    """Load expected result"""
+    return pd.DataFrame(expected_result())
