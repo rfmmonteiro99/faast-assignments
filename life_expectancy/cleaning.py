@@ -7,7 +7,7 @@ import pandas as pd
 
 
 # Define the path
-full_path: pathlib.Path = pathlib.Path(__file__).parent / 'data'
+DATA_DIR: pathlib.Path = pathlib.Path(__file__).parent / 'data'
 
 def load_data(
         file_path: pathlib.Path,
