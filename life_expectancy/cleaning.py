@@ -171,7 +171,7 @@ def save_data(
     )
 
 def main(
-        input_file_name:str,
+        input_file_name: str,
         region: Region) -> pd.DataFrame:
     """
     Steps: Load the data, clean it, and export it

@@ -21,11 +21,6 @@ def fixture_json() -> pd.DataFrame:
     """Load eu_life_expectancy_fixture.json"""
     return pd.read_json(FIXTURES_DIR / 'eu_life_expectancy_fixture.json')
 
-# @pytest.fixture
-# def fixture_pandas_from_json() -> pd.DataFrame:
-#     """Create a pd df from the data in the json file"""
-#     return pd.read_json(FIXTURES_DIR / 'eu_life_expectancy_fixture.json')
-
 @pytest.fixture
 def fixture_expected_result_json() -> pd.DataFrame:
     """Load pt_life_expectancy_fixture.csv"""
