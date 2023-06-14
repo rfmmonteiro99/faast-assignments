@@ -206,4 +206,4 @@ if __name__ == "__main__": # pragma: no cover
     parser.add_argument('region')
     args = parser.parse_args()
 
-    main('eurostat_life_expec.zip', args.region) # 'eu_life_expectancy_raw.tsv'
+    main('eurostat_life_expec.zip', Region(args.region).value) # 'eu_life_expectancy_raw.tsv'
