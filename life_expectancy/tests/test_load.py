@@ -2,7 +2,8 @@
 from unittest.mock import patch, Mock
 import pandas as pd
 
-from life_expectancy.cleaning import LoadTSV, LoadJSON, save_data
+from life_expectancy.loading import LoadTSV, LoadJSON
+from life_expectancy.main import save_data
 from . import OUTPUT_DIR
 
 
