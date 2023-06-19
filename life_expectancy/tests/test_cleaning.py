@@ -1,53 +1,26 @@
-"""Tests for the cleaning module"""
-from unittest.mock import patch, Mock
+"""Tests for the cleaning code"""
 import pandas as pd
 
-from life_expectancy.cleaning import load_data, clean_data, save_data, main
-from . import OUTPUT_DIR
+from life_expectancy.cleaning import CleanTSV, CleanJSON
+from life_expectancy.region import Region
 
 
-@patch('life_expectancy.cleaning.pd.read_csv')
-def test_load_data(read_table_mock: Mock, fixture_raw_data):
-    """Run the `load_data` function"""
-    read_table_mock.return_value = fixture_raw_data
-    file_name = 'eu_life_expectancy_raw.tsv'
-    results = load_data(OUTPUT_DIR / file_name)
-    read_table_mock.assert_called_once()
-
-    pd.testing.assert_frame_equal(results, fixture_raw_data)
-
-def test_clean_data(fixture_raw_data, fixture_expect):
-    """Run the `clean_data` function and compare the output to the expected output"""
-    pt_life_expectancy_data = clean_data(
+def test_clean_data_tsv(fixture_raw_data, fixture_expected_result):
+    """Run the `clean_data` function and compare the output to the expected output for tsv files"""
+    clean_class = CleanTSV()
+    pt_life_expectancy_data = clean_class.clean_data(
         eu_life_expectancy=fixture_raw_data,
-        region='PT'
+        region=Region.PT.value
     ).reset_index(drop=True)
 
-    pd.testing.assert_frame_equal(
-        pt_life_expectancy_data, fixture_expect
-    )
+    pd.testing.assert_frame_equal(pt_life_expectancy_data, fixture_expected_result)
 
-def test_save_data(fixture_expect, capfd):
-    """Run the `save_data` function"""
-    
-    with patch.object(fixture_expect, 'to_csv') as to_csv_mock:
-        to_csv_mock.side_effect = print('Data saved', end='')
-        file_name = 'pt_life_expectancy.csv'
-        save_data(
-            fixture_expect,
-            OUTPUT_DIR / file_name
-        )
-        to_csv_mock.assert_called_once()
+def test_clean_data_json(fixture_json, fixture_expected_result_json):
+    """Run the `clean_data` function and compare the output to the expected output for json files"""
+    clean_class = CleanJSON()
+    pt_life_expectancy_data = clean_class.clean_data(
+        eu_life_expectancy=fixture_json, # Acho que tenho de mudar esta fixture?
+        region=Region.PT.value
+    ).reset_index(drop=True)
 
-        out, _ = capfd.readouterr()
-        assert out == 'Data saved'
-
-@patch("life_expectancy.cleaning.load_data")
-def test_main(load_mock: Mock, fixture_raw_data, fixture_expect):
-    """Run the `main` function and compare the output to the expected output"""
-    load_mock.return_value = fixture_raw_data
-    pt_life_expectancy_data = main('PT').reset_index(drop=True)
-
-    pd.testing.assert_frame_equal(
-        pt_life_expectancy_data, fixture_expect
-    )
+    pd.testing.assert_frame_equal(pt_life_expectancy_data, fixture_expected_result_json)
